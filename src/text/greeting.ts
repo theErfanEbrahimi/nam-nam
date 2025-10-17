@@ -1,5 +1,6 @@
 import { Context } from 'telegraf';
 import createDebug from 'debug';
+import { CalculateCaloriesCoreService } from '../ai/ai';
 
 const debug = createDebug('bot:greeting_text');
 
@@ -13,9 +14,12 @@ const greeting = () => async (ctx: Context) => {
 
   const messageId = ctx.message?.message_id;
   const userName = `${ctx.message?.from.first_name} ${ctx.message?.from.last_name}`;
+  const text = ctx.text
+
+  const calories = await CalculateCaloriesCoreService.calculateCaloriesWithAI({message: text!})
 
   if (messageId) {
-    await replyToMessage(ctx, messageId, `Hello, ${userName}!`);
+    await replyToMessage(ctx, messageId, calories!);
   }
 };
 
